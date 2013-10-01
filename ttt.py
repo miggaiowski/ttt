@@ -15,7 +15,7 @@ Options:
 from docopt import docopt
 import matplotlib.pyplot as plt
 
-styles = ('r+', 'b^', '*')
+styles = ('r+', 'bx', '*')
 
 def probabilites(times):
     num_times = len(times)
@@ -27,10 +27,10 @@ def probabilites(times):
 def process_regular_file(filename):
     with open(filename, 'r') as f:
         times = f.readlines()
-    times = [int(i.strip()) for i in times]
+    times = [float(i.strip()) for i in times]
     times.sort()
     p1, = plt.plot(times, probabilites(times), 'r+')
-    plt.xlabel('time (ms)', fontsize=16)
+    plt.xlabel('time (s)', fontsize=16)
     plt.ylabel('cumulative probability', fontsize=16)
     plt.legend((p1,), ('curva',),
                loc='lower right', fontsize="x-small", numpoints=1)
@@ -50,13 +50,13 @@ def process_org_file(filename):
 
     plot_lines = []
     for c in xrange(columns):
-        times = [int(l[c]) for l in clean_lines]
+        times = [float(l[c]) for l in clean_lines]
         times.sort()
         p, = plt.plot(times, probabilites(times), styles[c])
         plot_lines.append(p)
     plt.legend(plot_lines, header,
                loc='lower right', fontsize="x-small", numpoints=1)
-    plt.xlabel('time (ms)', fontsize=16)
+    plt.xlabel('time (s)', fontsize=16)
     plt.ylabel('cumulative probability', fontsize=16)
 
 
@@ -74,6 +74,6 @@ if __name__ == "__main__":
 
     if output:
         with open(output, 'w') as f:
-            plt.savefig(f)
+            plt.savefig(f, dpi=400)
     if show:
         plt.show()
