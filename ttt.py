@@ -2,7 +2,7 @@
 
 """
 Usage:
-  ttt.py <input> [-o=<output>] [-s]
+  ttt.py <input> [-o=<output>] [-sf]
   ttt.py (-h | --help)
 
   <input>        file with one time per line
@@ -10,12 +10,15 @@ Options:
   -h --help                 Show this screen.
   -o --output=<output>      Save the chart to this file
   -s --show                 Show the chart
+  -f --force                Overwrite output file
 """
 
 from docopt import docopt
 import matplotlib.pyplot as plt
+import os
 
-styles = ('r+', 'bx', '*')
+styles = ('r+', 'bx', '*', 'c^', '--')
+
 
 def probabilites(times):
     num_times = len(times)
@@ -23,6 +26,7 @@ def probabilites(times):
     for t in times:
         y.append(float(len([v for v in times if v <= t])) / num_times)
     return y
+
 
 def process_regular_file(filename):
     with open(filename, 'r') as f:
@@ -35,10 +39,12 @@ def process_regular_file(filename):
     plt.legend((p1,), ('curva',),
                loc='lower right', fontsize="x-small", numpoints=1)
 
+
 def process_org_file(filename):
     with open(filename, 'r') as f:
         lines = f.readlines()
-    lines = [l.strip() for l in lines if not l.startswith('|--')]  # filter frame lines
+    lines = [l.strip() for l in lines
+             if not l.startswith('|--')]  # filter frame lines
     split_lines = [l.split('|') for l in lines]
     clean_lines = [[i.strip() for i in l if i.strip()] for l in split_lines]
     columns = len(clean_lines[0])
@@ -66,6 +72,7 @@ if __name__ == "__main__":
     filename = arguments['<input>']
     output = arguments['--output']
     show = arguments['--show']
+    force = arguments['--force']
 
     if filename.endswith('.org'):
         data = process_org_file(filename)
@@ -73,7 +80,9 @@ if __name__ == "__main__":
         data = process_regular_file(filename)
 
     if output:
-        with open(output, 'w') as f:
-            plt.savefig(f, dpi=400)
+        if not os.path.exists(output) or force:
+            plt.savefig(output, dpi=400)
+        else:
+            print "File exists:", output
     if show:
         plt.show()
