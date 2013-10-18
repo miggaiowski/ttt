@@ -45,7 +45,7 @@ def process_org_file(filename):
         lines = f.readlines()
     lines = [l.strip() for l in lines
              if not l.startswith('|--')]  # filter frame lines
-    split_lines = [l.split('|') for l in lines]
+    split_lines = [l.split('|') for l in lines if l.startswith('|')]
     clean_lines = [[i.strip() for i in l if i.strip()] for l in split_lines]
     columns = len(clean_lines[0])
     if not clean_lines[0][0].isdigit():
