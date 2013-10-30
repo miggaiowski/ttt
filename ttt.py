@@ -17,7 +17,7 @@ from docopt import docopt
 import matplotlib.pyplot as plt
 import os
 
-styles = ('r+', 'bx', '*', 'c^', '--')
+styles = ('r+', 'bx', 'r*', 'b^', 'rs', 'b.')
 
 
 def probabilites(times):
